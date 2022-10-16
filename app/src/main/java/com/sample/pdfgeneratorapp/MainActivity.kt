@@ -1,6 +1,8 @@
 package com.sample.pdfgeneratorapp
 
 import android.content.pm.PackageManager
+import android.graphics.Bitmap.CompressFormat
+import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
@@ -12,7 +14,9 @@ import com.itextpdf.text.pdf.PdfPCell
 import com.itextpdf.text.pdf.PdfPTable
 import com.itextpdf.text.pdf.PdfWriter
 import com.sample.pdfgeneratorapp.databinding.ActivityMainBinding
+import java.io.ByteArrayOutputStream
 import java.io.FileOutputStream
+import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -106,6 +110,11 @@ class MainActivity : AppCompatActivity() {
             //Adding the table
             mDoc.add(usersTable)
 
+            mDoc.add(Paragraph("\n\n"))
+
+            //Adding image
+            mDoc.add(imagePdf(R.drawable.logo, CompressFormat.PNG))
+
             //Close
             mDoc.close()
             "$mFileName.pdf\n is create to \n$mFilePath".shortToast()
@@ -149,6 +158,24 @@ class MainActivity : AppCompatActivity() {
         cell.horizontalAlignment = Element.ALIGN_CENTER
         cell.verticalAlignment = Element.ALIGN_CENTER
         return cell
+    }
+
+    private fun imagePdf(
+        imageSrc: Int, compressFormat: CompressFormat
+    ): Image? {
+        val bm = BitmapFactory.decodeResource(resources, imageSrc)
+        val stream = ByteArrayOutputStream()
+        bm.compress(compressFormat, 100, stream)
+        var img: Image? = null
+        val byteArray: ByteArray = stream.toByteArray()
+        try {
+            img = Image.getInstance(byteArray)
+        } catch (ex: BadElementException) {
+            ex.printStackTrace()
+        } catch (ex: IOException) {
+            ex.printStackTrace()
+        }
+        return img
     }
 
     //Short SnackBar
