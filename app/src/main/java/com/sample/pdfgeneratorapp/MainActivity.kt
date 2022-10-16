@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
 import com.itextpdf.text.*
+import com.itextpdf.text.pdf.PdfPCell
 import com.itextpdf.text.pdf.PdfPTable
 import com.itextpdf.text.pdf.PdfWriter
 import com.sample.pdfgeneratorapp.databinding.ActivityMainBinding
@@ -92,14 +93,14 @@ class MainActivity : AppCompatActivity() {
             mDoc.add(Paragraph("\n\n"))
 
             val usersTable = PdfPTable(3)
-            usersTable.addCell("USER ID")
-            usersTable.addCell("USER NAME")
-            usersTable.addCell("USER AGE")
+            usersTable.addCell(cellCenterHead("User id"))
+            usersTable.addCell(cellCenterHead("User name"))
+            usersTable.addCell(cellCenterHead("User age"))
 
             usersList.forEach {
-                usersTable.addCell(it.id)
-                usersTable.addCell(it.name)
-                usersTable.addCell(it.age.toString())
+                usersTable.addCell(cellCenter(it.id))
+                usersTable.addCell(cellCenter(it.name))
+                usersTable.addCell(cellCenter(it.age.toString()))
             }
 
             //Adding the table
@@ -130,6 +131,24 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+
+    private fun cellCenterHead(text: String): PdfPCell {
+        val paragraph = Paragraph(text)
+        val cell = PdfPCell(paragraph)
+        cell.horizontalAlignment = Element.ALIGN_CENTER
+        cell.verticalAlignment = Element.ALIGN_CENTER
+        cell.backgroundColor = BaseColor.PINK
+        return cell
+    }
+
+    private fun cellCenter(text: String): PdfPCell {
+        val paragraph = Paragraph(text)
+        val cell = PdfPCell(paragraph)
+        cell.horizontalAlignment = Element.ALIGN_CENTER
+        cell.verticalAlignment = Element.ALIGN_CENTER
+        return cell
     }
 
     //Short SnackBar
